@@ -11,9 +11,9 @@ export const mutations = {
 export const actions = {
   async getFundsByRange(state, payload) {
     let res = await this.$axios.$get(
-      "/finno-ex-re-v2-static-staging/recruitment-test/fund-ranking-1Y.json"
+      `/finno-ex-re-v2-static-staging/recruitment-test/fund-ranking-${payload}.json`
     );
-    state.commit("GET_FUNDS", res);
+    state.commit("GET_FUNDS", res.data);
   },
 };
 

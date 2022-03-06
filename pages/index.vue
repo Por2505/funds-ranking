@@ -1,5 +1,14 @@
 <template>
   <div>
+    <input
+      v-model="funds"
+      type="text"
+      placeholder="ค้นหาด้วยชื่อกองทุน"
+      class="border"
+    />
+    <button @click="searchFunds()">ค้นหา</button>
+    <button @click="clearFilter()">รีเซ็ทการกรอง</button>
+    <br />
     <p>funds ranking</p>
     <button @click="getFundsByRange('1D')" class="p-2 bg-yellow-100 mr-2">
       1D
@@ -13,7 +22,7 @@
     <button @click="getFundsByRange('1Y')" class="p-2 bg-yellow-100 mr-2">
       1Y
     </button>
-    <div class="flex flex-col mx-12">
+    <div class="flex flex-col mx-12 h-table">
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div
@@ -87,7 +96,7 @@
       </div>
     </div>
     <div
-      class="w-full flex justify-between items-center text-sm  bottom-0 bg-white px-6 py-5"
+      class="w-full flex justify-between items-center text-sm bottom-0 bg-white px-6 py-5"
     >
       <div class="flex">
         <p class="font-medium">แสดงรายการ</p>
@@ -151,6 +160,7 @@ export default {
         limit: 20,
         currentPage: 1,
       },
+      funds: '',
     }
   },
   watch: {
@@ -171,11 +181,27 @@ export default {
   },
   methods: {
     async getFundsByRange(time) {
+      this.pagination.currentPage = 1
+      this.pagination.limit = 20
       await this.$store.dispatch('funds/getFundsByRange', time)
     },
     formatDate(date) {
       return this.$moment(date).format('DD/MM/YYYY - HH:mm:ss')
     },
+    searchFunds() {
+      this.$store.dispatch('funds/searchFunds', this.funds)
+    },
+    clearFilter() {
+      this.pagination.currentPage = 1
+      this.pagination.limit = 20
+      this.funds = ''
+      this.$store.dispatch('funds/clearFilter')
+    },
   },
 }
 </script>
+<style scoped>
+.h-table {
+  height: 75vh;
+}
+</style>

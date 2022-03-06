@@ -25,7 +25,7 @@
             v-model="funds"
             id="search"
             name="search"
-            class="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-yellow-100 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-white focus:ring-white focus:text-gray-900 sm:text-sm"
+            class="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-yellow-100 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-yellow-400 focus:ring-white focus:text-gray-900 sm:text-sm"
             placeholder="ค้นหาชื่อกองทุน"
             type="search"
           />
@@ -38,13 +38,13 @@
         ค้นหา
       </button>
       <button
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+        class="hidden md:block inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
         @click="clearFilter()"
       >
         รีเซ็ตการกรอง
       </button>
     </div>
-    <div class="grid grid-cols-5 my-4">
+    <div class="hidden md:grid md:grid-cols-5 my-4">
       <div></div>
       <div class="flex justify-center items-center">
         ผลตอบแทน:
@@ -91,11 +91,58 @@
           1Y
         </button>
       </div>
-      <div>
+      <!-- <div>
         <button
           class="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
         >
           + เพิ่มตัวกรอง
+        </button>
+      </div> -->
+    </div>
+    <div class="md:hidden block py-4 flex justify-center grid grid-cols-3">
+      <div class="flex justify-end items-center">
+        ผลตอบแทน:
+      </div>
+      <div class="ml-2 col-span-2">
+        <button
+          @click="getFundsByRange('1D')"
+          :class="
+            time_funds === '1D'
+              ? 'bg-yellow-300 p-2 mr-2'
+              : 'p-2 bg-yellow-100 mr-2'
+          "
+        >
+          1D
+        </button>
+        <button
+          @click="getFundsByRange('1W')"
+          :class="
+            time_funds === '1W'
+              ? 'bg-yellow-300 p-2 mr-2'
+              : 'p-2 bg-yellow-100 mr-2'
+          "
+        >
+          1W
+        </button>
+        <button
+          @click="getFundsByRange('1M')"
+          :class="
+            time_funds === '1M'
+              ? 'bg-yellow-300 p-2 mr-2'
+              : 'p-2 bg-yellow-100 mr-2'
+          "
+        >
+          1M
+        </button>
+        <button
+          @click="getFundsByRange('1Y')"
+          :class="
+            time_funds === '1Y'
+              ? 'bg-yellow-300 p-2 mr-2'
+              : 'p-2 bg-yellow-100 mr-2'
+          "
+        >
+          1Y
         </button>
       </div>
     </div>

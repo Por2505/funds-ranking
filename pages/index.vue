@@ -22,6 +22,7 @@
             </svg>
           </div>
           <input
+            data-testid="searchfunds"
             v-model="funds"
             id="search"
             name="search"
@@ -91,13 +92,6 @@
           1Y
         </button>
       </div>
-      <!-- <div>
-        <button
-          class="mx-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
-        >
-          + เพิ่มตัวกรอง
-        </button>
-      </div> -->
     </div>
     <div class="md:hidden block py-4 flex justify-center grid grid-cols-3">
       <div class="flex justify-end items-center">
@@ -146,182 +140,59 @@
         </button>
       </div>
     </div>
-
-    <div class="flex flex-col mx-12 h-table">
-      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div
-            class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
-          >
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    ลำดับ
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    ชื่อกองทุน
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    ผลตอบแทน
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    ราคา
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    เวลาที่ข้อมูลถูกอัพเดต
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(funds, idx) in data"
-                  :key="idx"
-                  :class="idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
-                >
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                  >
-                    {{ funds.rank }}
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                  >
-                    {{ funds.thailand_fund_code }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ funds.nav_return }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ funds.nav }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ formatDate(funds.nav_date) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="w-full flex justify-between items-center text-sm bottom-0 bg-white px-6 py-5"
-    >
-      <div class="flex">
-        <p class="font-medium">แสดงรายการ</p>
-        <ul class="text-yellow-500 ml-1">
-          <li
-            :class="`inline cursor-pointer ${
-              pagination.limit === 20 ? 'font-bold' : ''
-            }`"
-            @click="pagination.limit = 20"
-          >
-            20
-          </li>
-          <li
-            :class="`inline cursor-pointer ${
-              pagination.limit === 50 ? 'font-bold' : ''
-            }`"
-            @click="pagination.limit = 50"
-          >
-            50
-          </li>
-          <li
-            :class="`inline cursor-pointer ${
-              pagination.limit === 100 ? 'font-bold' : ''
-            }`"
-            @click="pagination.limit = 100"
-          >
-            100
-          </li>
-          <li
-            :class="`inline cursor-pointer ${
-              pagination.limit === 150 ? 'font-bold' : ''
-            }`"
-            @click="pagination.limit = 150"
-          >
-            150
-          </li>
-        </ul>
-      </div>
-
-      <div>
-        <t-pagination
-          v-model="pagination.currentPage"
-          :total-items="paginate.total_record"
-          :limit="pagination.limit"
-          :per-page="pagination.limit"
-        />
-      </div>
-    </div>
+    <TableData :data="data" />
+    <Paginate :paginate="paginates" />
   </div>
 </template>
 
 <script>
+import TableData from '../components/TableData.vue'
+import Paginate from '../components/Paginate.vue'
 export default {
   name: 'IndexPage',
   async created() {
     this.time_funds = '1D'
     await this.$store.dispatch('funds/getFundsByRange', '1D')
   },
+  components: {
+    TableData,
+    Paginate,
+  },
   data() {
     return {
-      pagination: {
-        limit: 20,
-        currentPage: 1,
-      },
       funds: '',
       time_funds: '',
     }
   },
-  watch: {
-    'pagination.limit'() {
-      this.$store.dispatch('funds/setPagination', this.pagination)
-    },
-    'pagination.currentPage'() {
-      this.$store.dispatch('funds/setPagination', this.pagination)
-    },
-  },
+
   computed: {
     data() {
       return this.$store.getters['funds/getterFunds']
     },
-    paginate() {
+    paginates() {
       return this.$store.getters['funds/getterPagination']
     },
   },
   methods: {
     async getFundsByRange(time) {
       this.time_funds = time
-      this.pagination.currentPage = 1
-      this.pagination.limit = 20
+      let paginate = {
+        limit: 20,
+        currentPage: 1,
+      }
+      this.$store.dispatch('funds/setPagination', paginate)
       await this.$store.dispatch('funds/getFundsByRange', time)
     },
-    formatDate(date) {
-      return this.$moment(date).format('DD/MM/YYYY - HH:mm:ss')
-    },
+
     searchFunds() {
       this.$store.dispatch('funds/searchFunds', this.funds)
     },
     clearFilter() {
-      this.pagination.currentPage = 1
-      this.pagination.limit = 20
+      let paginate = {
+        limit: 20,
+        currentPage: 1,
+      }
+      this.$store.dispatch('funds/setPagination', paginate)
       this.funds = ''
       this.$store.dispatch('funds/clearFilter')
     },

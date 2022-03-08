@@ -55,4 +55,8 @@ Vue.use(VueTailwind, settings)
 
 ## เราจะสามารถติดตาม performance issue บน production ได้อย่างไร เคยมีประสบการณ์ด้านนี้ไหม
 
+ไม่เคยมีประสบการณ์ด้านนี้เลย
+
 ## อยากปรับปรุง FINNOMENA APIs ที่ใช้ในการพัฒนา ในส่วนไหนให้ดียิ่งขึ้น
+
+อยากปรับ APIs ใช้สามารถยิง GetFundsByRange APIs เส้นเดียวที่ส่ง query string (1D,1W,1M,1Y)
